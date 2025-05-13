@@ -20,9 +20,10 @@ def plot_strategy_dashboard(df, strategy_name):
     else:
         return plot_signals(df)
     
-def plot_signals(df):
+def plot_signals(df, show_signals=True, show_indicators=True):
     fig = go.Figure()
 
+    # Close price
     fig.add_trace(go.Scatter(
         x=df['Date'], y=df['Close'],
         mode='lines', name='Close Price',
@@ -30,28 +31,29 @@ def plot_signals(df):
     ))
 
     # Buy/Sell signals
-    fig.add_trace(go.Scatter(
-        x=df[df['Signal'] == 1]['Date'], y=df[df['Signal'] == 1]['Close'],
-        mode='markers', name='Buy',
-        marker=dict(symbol='triangle-up', color='green', size=15)
-    ))
+    if show_signals:
+        fig.add_trace(go.Scatter(
+            x=df[df['Signal'] == 1]['Date'], y=df[df['Signal'] == 1]['Close'],
+            mode='markers', name='Buy',
+            marker=dict(symbol='triangle-up', color='green', size=15)
+        ))
+        fig.add_trace(go.Scatter(
+            x=df[df['Signal'] == -1]['Date'], y=df[df['Signal'] == -1]['Close'],
+            mode='markers', name='Sell',
+            marker=dict(symbol='triangle-down', color='red', size=15)
+        ))
 
-    fig.add_trace(go.Scatter(
-        x=df[df['Signal'] == -1]['Date'], y=df[df['Signal'] == -1]['Close'],
-        mode='markers', name='Sell',
-        marker=dict(symbol='triangle-down', color='red', size=15)
-    ))
-
-    # Optional overlays
-    if 'SMA_Short' in df.columns and 'SMA_Long' in df.columns:
-        fig.add_trace(go.Scatter(x=df['Date'], y=df['SMA_Short'], name='SMA Short', line=dict(color='cyan', dash='dot')))
-        fig.add_trace(go.Scatter(x=df['Date'], y=df['SMA_Long'], name='SMA Long', line=dict(color='orange', dash='dash')))
-    elif 'EWMA_Short' in df.columns and 'EWMA_Long' in df.columns:
-        fig.add_trace(go.Scatter(x=df['Date'], y=df['EWMA_Short'], name='EWMA Short', line=dict(color='cyan', dash='dot')))
-        fig.add_trace(go.Scatter(x=df['Date'], y=df['EWMA_Long'], name='EWMA Long', line=dict(color='orange', dash='dash')))
-    elif 'Upper_Breakout' in df.columns and 'Lower_Breakout' in df.columns:
-        fig.add_trace(go.Scatter(x=df['Date'], y=df['Upper_Breakout'], name='Upper Breakout', line=dict(color='green', dash='dot')))
-        fig.add_trace(go.Scatter(x=df['Date'], y=df['Lower_Breakout'], name='Lower Breakout', line=dict(color='red', dash='dot')))
+    # Technical indicators
+    if show_indicators:
+        if 'SMA_Short' in df.columns and 'SMA_Long' in df.columns:
+            fig.add_trace(go.Scatter(x=df['Date'], y=df['SMA_Short'], name='SMA Short', line=dict(color='cyan', dash='dot')))
+            fig.add_trace(go.Scatter(x=df['Date'], y=df['SMA_Long'], name='SMA Long', line=dict(color='orange', dash='dash')))
+        elif 'EWMA_Short' in df.columns and 'EWMA_Long' in df.columns:
+            fig.add_trace(go.Scatter(x=df['Date'], y=df['EWMA_Short'], name='EWMA Short', line=dict(color='cyan', dash='dot')))
+            fig.add_trace(go.Scatter(x=df['Date'], y=df['EWMA_Long'], name='EWMA Long', line=dict(color='orange', dash='dash')))
+        elif 'Upper_Breakout' in df.columns and 'Lower_Breakout' in df.columns:
+            fig.add_trace(go.Scatter(x=df['Date'], y=df['Upper_Breakout'], name='Upper Breakout', line=dict(color='green', dash='dot')))
+            fig.add_trace(go.Scatter(x=df['Date'], y=df['Lower_Breakout'], name='Lower Breakout', line=dict(color='red', dash='dot')))
 
     fig.update_layout(
         title="Price with Buy/Sell Signals",
@@ -62,8 +64,7 @@ def plot_signals(df):
 
     return fig
 
-
-def plot_price_macd(df):
+def plot_price_macd(df, show_signals=True):
     fig = make_subplots(
         rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.05,
         subplot_titles=("Price with Buy/Sell Signals", "MACD")
@@ -74,17 +75,17 @@ def plot_price_macd(df):
         x=df["Date"], y=df["Close"], name="Close Price", line=dict(color="blue")
     ), row=1, col=1)
 
-    fig.add_trace(go.Scatter(
-        x=df[df["Signal"] == 1]["Date"], y=df[df["Signal"] == 1]["Close"],
-        mode="markers", name="Buy", marker=dict(symbol="triangle-up", color="green", size=15)
-    ), row=1, col=1)
+    if show_signals:
+        fig.add_trace(go.Scatter(
+            x=df[df["Signal"] == 1]["Date"], y=df[df["Signal"] == 1]["Close"],
+            mode="markers", name="Buy", marker=dict(symbol="triangle-up", color="green", size=15)
+        ), row=1, col=1)
+        fig.add_trace(go.Scatter(
+            x=df[df["Signal"] == -1]["Date"], y=df[df["Signal"] == -1]["Close"],
+            mode="markers", name="Sell", marker=dict(symbol="triangle-down", color="red", size=15)
+        ), row=1, col=1)
 
-    fig.add_trace(go.Scatter(
-        x=df[df["Signal"] == -1]["Date"], y=df[df["Signal"] == -1]["Close"],
-        mode="markers", name="Sell", marker=dict(symbol="triangle-down", color="red", size=15)
-    ), row=1, col=1)
-
-    # MACD
+    # MACD panel
     fig.add_trace(go.Scatter(
         x=df["Date"], y=df["MACD"], name="MACD", line=dict(color="purple")
     ), row=2, col=1)
@@ -104,7 +105,7 @@ def plot_price_macd(df):
 
     return fig
 
-def plot_price_rsi(df):
+def plot_price_rsi(df, show_signals=True):
     fig = make_subplots(
         rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.05,
         subplot_titles=("Price with Buy/Sell Signals", "RSI")
@@ -115,15 +116,15 @@ def plot_price_rsi(df):
         x=df["Date"], y=df["Close"], name="Close Price", line=dict(color="blue")
     ), row=1, col=1)
 
-    fig.add_trace(go.Scatter(
-        x=df[df["Signal"] == 1]["Date"], y=df[df["Signal"] == 1]["Close"],
-        mode="markers", name="Buy", marker=dict(symbol="triangle-up", color="green", size=15)
-    ), row=1, col=1)
-
-    fig.add_trace(go.Scatter(
-        x=df[df["Signal"] == -1]["Date"], y=df[df["Signal"] == -1]["Close"],
-        mode="markers", name="Sell", marker=dict(symbol="triangle-down", color="red", size=15)
-    ), row=1, col=1)
+    if show_signals:
+        fig.add_trace(go.Scatter(
+            x=df[df["Signal"] == 1]["Date"], y=df[df["Signal"] == 1]["Close"],
+            mode="markers", name="Buy", marker=dict(symbol="triangle-up", color="green", size=15)
+        ), row=1, col=1)
+        fig.add_trace(go.Scatter(
+            x=df[df["Signal"] == -1]["Date"], y=df[df["Signal"] == -1]["Close"],
+            mode="markers", name="Sell", marker=dict(symbol="triangle-down", color="red", size=15)
+        ), row=1, col=1)
 
     # RSI
     fig.add_trace(go.Scatter(
