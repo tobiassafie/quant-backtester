@@ -155,9 +155,11 @@ def plot_drawdown(df):
     return fig
 
 def plot_return_histogram(df):
-    fig = px.histogram(df, x='Strategy_Returns', nbins=50,
-                       title='Histogram of Strategy Daily Returns',
-                       labels={'Strategy_Returns': 'Daily Return',
-                               'count': 'Frequency'},
-                       color_discrete_sequence=['purple'])
+    fig = px.histogram(
+        df, x='Strategy_Returns', nbins=50,
+        title='Histogram of Strategy Daily Returns',
+        labels={'Strategy_Returns': 'Daily Return'},
+        color_discrete_sequence=['purple']
+    )
+    fig.update_layout(yaxis_title='Frequency')
     return fig
