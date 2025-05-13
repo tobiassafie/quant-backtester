@@ -12,13 +12,13 @@ def plot_cumulative_returns(df):
                       hovermode='x unified')
     return fig
 
-def plot_strategy_dashboard(df, strategy_name, show_signals=True, show_indicators=True, show_subplots=True):
-    if strategy_name == "MACD" and show_subplots:
-        return plot_price_macd(df, show_signals)
-    elif strategy_name == "RSI" and show_subplots:
-        return plot_price_rsi(df, show_signals)
+def plot_strategy_dashboard(df, strategy_name):
+    if strategy_name == "MACD":
+        return plot_price_macd(df)
+    elif strategy_name == "RSI":
+        return plot_price_rsi(df)
     else:
-        return plot_signals(df, show_signals, show_indicators)
+        return plot_signals(df)
     
 def plot_signals(df, show_signals=True, show_indicators=True):
     fig = go.Figure()
