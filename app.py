@@ -133,6 +133,21 @@ def run_atr_backtest(ticker, start, end, atr_w, breakout_w, scale):
     df, metrics_df = calculate_metrics(df)
     return df, metrics_df
 
+# === Toggle Buttons ===
+st.markdown("### Display Options")
+
+show_signals = st.checkbox(
+    "Show Buy/Sell Markers", value=True,
+    help="Toggles entry and exit signal markers on the price chart.")
+
+show_indicators = st.checkbox(
+    "Show Indicator Overlays", value=True,
+    help="Overlay technical indicators like SMAs, EWMAs, or breakout bands.")
+
+show_subplots = st.checkbox(
+    "Show Subplots (MACD/RSI Panels)", value=True,
+    help="Adds separate MACD or RSI subpanels below the price chart if relevant.")
+
 # === Run Backtest ===
 if st.button('Run Backtest'):
     if strategy == 'SMA':
@@ -153,7 +168,8 @@ if st.button('Run Backtest'):
 
     st.subheader('Strategy Visualization')
     st.markdown('**Visualize buy/sell signals and technical indicators specific to the selected strategy.**')
-    st.plotly_chart(plot_strategy_dashboard(df, strategy), use_container_width=True)
+    st.plotly_chart(plot_strategy_dashboard(df, strategy, show_signals, show_indicators, show_subplots),
+    use_container_width=True)
 
     st.subheader('Drawdown Over Time')
     st.markdown('**Track the peak-to-trough declines in strategy value over time.**')
