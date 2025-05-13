@@ -24,7 +24,9 @@ col1, col2 = st.columns(2)
 
 with col1:
     ticker = st.text_input('Enter Ticker Symbol', value='AAPL')
-    strategy = st.selectbox('Choose a Strategy', ['SMA', 'EWMA', 'MACD', 'RSI', 'ATR'])
+    strategy = st.selectbox('Choose a Strategy',
+                             ['SMA', 'EWMA', 'MACD', 'RSI', 'ATR'],
+                             help='Select a trading strategy to backtest and visualize.')
 
     strategy_descriptions = {
     "SMA": "Simple Moving Average crossover: Buy when short SMA crosses above long SMA; sell when it crosses below.",
@@ -47,25 +49,36 @@ end_date = datetime.combine(end_date, time.min)
 # === Strategy-Specific Inputs ===
 if strategy == 'SMA':
     st.subheader('SMA Parameters')
-    short_window = st.slider('Short Window', min_value=5, max_value=50, value=20)
-    long_window = st.slider('Long Window', min_value=10, max_value=200, value=50)
+    short_window = st.slider('Short Window', min_value=5, max_value=50, value=20,
+                             help="The period for the short-term moving average. Used to generate entry/exit signals.")
+    long_window = st.slider('Long Window', min_value=10, max_value=200, value=50,
+                            help="The period for the long-term moving average. Signals are generated when the short MA crosses this.")
 elif strategy == 'EWMA':
     st.subheader('EWMA Parameters')
-    short_window = st.slider('Short Window', min_value=5, max_value=50, value=20)
-    long_window = st.slider('Long Window', min_value=10, max_value=200, value=50)
+    short_window = st.slider('Short Window', min_value=5, max_value=50, value=20,
+                             help="The short EWMA emphasizes recent prices more heavily for responsiveness.")
+    long_window = st.slider('Long Window', min_value=10, max_value=200, value=50,
+                            help="The long EWMA provides smoother signals and serves as the baseline trend.")
 elif strategy == "MACD":
     st.subheader("MACD Parameters")
-    short_window = st.slider("Short EMA Window", 5, 20, 12)
-    long_window = st.slider("Long EMA Window", 10, 50, 26)
-    signal_window = st.slider("Signal Line Window", 5, 20, 9)
+    short_window = st.slider("Short EMA Window", 5, 20, 12,
+                             help="Fast EWMA used in MACD calculation (default 12).")
+    long_window = st.slider("Long EMA Window", 10, 50, 26,
+                            help="Slow EWMA used in MACD calculation (default 26).")
+    signal_window = st.slider("Signal Line Window", 5, 20, 9,
+                              help="EWMA of the MACD line, used to generate buy/sell signals.")
 elif strategy == 'RSI':
     st.subheader('RSI Parameters')
-    rsi_period = st.slider('RSI Period', min_value=5, max_value=30, value=14)
+    rsi_period = st.slider('RSI Period', min_value=5, max_value=30, value=14,
+                           help="The lookback period for RSI. Common default is 14 days.")
 elif strategy == "ATR":
     st.subheader("ATR Breakout Parameters")
-    atr_window = st.slider("ATR Window", 5, 50, 14)
-    breakout_window = st.slider("Breakout Window", 10, 50, 20)
-    scale_factor = st.slider("Scale Factor", 0.1, 3.0, 0.5, step=0.1)
+    atr_window = st.slider("ATR Window", 5, 50, 14,
+                           help="ATR period defines the volatility baseline. Higher values = smoother breakout levels.")
+    breakout_window = st.slider("Breakout Window", 10, 50, 20,
+                                help="Period over which recent highs/lows are tracked for breakout logic.")
+    scale_factor = st.slider("Scale Factor", 0.1, 3.0, 0.5, step=0.1,
+                             help="Multiplier applied to ATR for adjusting breakout thresholds.")
 
 # === Wrapper Helper ===
 def trim_warmup(df, warmup_window, start_date):
@@ -136,16 +149,21 @@ if st.button('Run Backtest'):
 
     # === Plot Results ===
     st.subheader("Cumulative Returns")
+    st.markdown("**Compare the cumulative performance of the strategy vs. the overall market.**")
     st.plotly_chart(plot_cumulative_returns(df), use_container_width=True)
 
     st.subheader("Strategy Visualization")
+    st.markdown("**Visualize buy/sell signals and technical indicators specific to the selected strategy.**")
     st.plotly_chart(plot_strategy_dashboard(df, strategy), use_container_width=True)
 
     st.subheader("Drawdown Over Time")
+    st.markdown("**Track the peak-to-trough declines in strategy value over time.**")
     st.plotly_chart(plot_drawdown(df), use_container_width=True)
 
     st.subheader("Daily Return Distribution")
+    st.markdown("**Examine the distribution of daily strategy returns to assess volatility and skew.**")
     st.plotly_chart(plot_return_histogram(df), use_container_width=True)
 
     st.subheader('Performance Metrics')
-    st.dataframe(metrics.style.format({'Value': '{:.2f}'}))
+    st.markdown("**Key statistics summarizing return, risk, and efficiency of the selected strategy.**")
+    st.dataframe(metrics.style.format({'Value': '{:.3f}'}))
