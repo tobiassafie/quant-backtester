@@ -3,8 +3,6 @@
 
 An interactive Streamlit-based dashboard for visualizing and backtesting popular trading strategies on historical market data. Built for clarity, extensibility, and real-world relevance.
 
-![Screenshot](link-to-your-screenshot.png)
-
 [Live App on Streamlit](https://quantbacktester.streamlit.app/)
 
 ---
@@ -18,12 +16,12 @@ An interactive Streamlit-based dashboard for visualizing and backtesting popular
   - RSI + Bollinger Band
   - ATR Breakout
 - Real-time performance metrics:
-  - Sharpe ratio, Sortino, Max drawdown, Win rate, CAGR, Profit factor
+  - Sharpe ratio, Sortino, Max drawdown, CAGR, Profit factor
 - Interactive strategy overlays:
   - Buy/sell signal markers
   - Technical indicators
   - Subpanels for RSI/MACD
-- Drawdown analysis, return histograms, log-scale equity curve toggle
+- Drawdown analysis and return histograms
 - Exportable trade log
 - Custom date ranges, parameter tuning via UI
 
@@ -64,7 +62,6 @@ quant-backtester/
 ├── utils/
 │   ├── metrics.py          # Performance calculation
 │   └── charts.py           # Plotly visualizations
-└── .streamlit/             # Streamlit config (optional)
 ```
 
 ---
@@ -77,7 +74,7 @@ Each strategy is fully documented with signal logic and parameter controls insid
 |----------|--------|
 | SMA      | Crosses of two simple moving averages |
 | EWMA     | Exponential moving average crossover |
-| MACD     | Fast/slow EMA divergence with signal line confirmation |
+| MACD     | Fast/slow EWMA divergence with signal line confirmation |
 | RSI      | Reversion strategy with Bollinger filter |
 | ATR      | Volatility breakout using ATR and 20-day high/low |
 
@@ -93,4 +90,4 @@ Each strategy is fully documented with signal logic and parameter controls insid
 ---
 
 ## Contact
-Built by [Your Name]. Reach out via [LinkedIn](https://linkedin.com/in/yourname) or open an issue!
+Built by Tobias Safie. Reach out via [LinkedIn](https://linkedin.com/in/tsafie) or open an issue!
