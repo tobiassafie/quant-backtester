@@ -153,9 +153,8 @@ if st.button('Run Backtest'):
 
     st.subheader('Strategy Visualization')
     st.markdown('**Visualize buy/sell signals and technical indicators specific to the selected strategy.**')
-    st.plotly_chart(plot_strategy_dashboard(df, strategy, show_signals, show_indicators, show_subplots),
-    use_container_width=True)
-
+    st.plotly_chart(plot_strategy_dashboard(df, strategy), use_container_width=True)
+    
     st.subheader('Drawdown Over Time')
     st.markdown('**Track the peak-to-trough declines in strategy value over time.**')
     st.plotly_chart(plot_drawdown(df), use_container_width=True)
