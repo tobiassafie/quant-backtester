@@ -133,26 +133,6 @@ def run_atr_backtest(ticker, start, end, atr_w, breakout_w, scale):
     df, metrics_df = calculate_metrics(df)
     return df, metrics_df
 
-
-# Future improvements:
-
-'''
-=== Toggle Buttons ===
-st.markdown("### Display Options")
-
-show_signals = st.checkbox(
-    "Show Buy/Sell Markers", value=True,
-    help="Toggles entry and exit signal markers on the price chart.")
-
-show_indicators = st.checkbox(
-    "Show Indicator Overlays", value=True,
-    help="Overlay technical indicators like SMAs, EWMAs, or breakout bands.")
-
-show_subplots = st.checkbox(
-    "Show Subplots (MACD/RSI Panels)", value=True,
-    help="Adds separate MACD or RSI subpanels below the price chart if relevant.")
-'''
-
 # === Run Backtest ===
 if st.button('Run Backtest'):
     if strategy == 'SMA':
